@@ -1,0 +1,8 @@
+{
+    "editor.formatOnSave": false,
+    "[markdown]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+    },
+}

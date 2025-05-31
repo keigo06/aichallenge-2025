@@ -1,0 +1,45 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=827846 to learn about workspace recommendations.
+	// Extension identifier format: ${publisher}.${name}. Example: vscode.csharp
+	// List of extensions which should be recommended for users of this workspace.
+	"recommendations": [
+		// C++ Related
+		"ms-vscode.cpptools",
+		"ms-vscode.cpptools-extension-pack",
+		"ms-vscode.cpptools-themes",
+		"jeff-hykin.better-cpp-syntax",
+		"twxs.cmake",
+		"ms-vscode.cmake-tools",
+		// Python Related
+		"ms-python.python",
+		"ms-python.vscode-pylance",
+		"ms-python.flake8",
+		"ms-python.isort",
+		// ROS 2 Related
+		"jaehyunshim.vscode-ros2",
+		"nonanonno.vscode-ros2",
+		// Git Related
+		"mhutchie.git-graph",
+		"eamodio.gitlens",
+		// Markdown Related
+		"davidanson.vscode-markdownlint",
+		"bierner.markdown-mermaid",
+		"bpruitt-goddard.mermaid-markdown-syntax-highlighting",
+		"yzhang.markdown-all-in-one",
+		// Others
+		"usernamehw.errorlens",
+		"oderwat.indent-rainbow",
+		"gruntfuggly.todo-tree",
+		"aaron-bond.better-comments",
+		"shardulm94.trailing-spaces",
+		"cschlosser.doxdocgen",
+		"streetsidesoftware.code-spell-checker",
+        "visualstudioexptteam.vscodeintellicode",
+        "mechatroner.rainbow-csv",
+        // "github.vscode-github-actions",
+    ],
+	// List of extensions recommended by VS Code that should not be recommended for users of this workspace.
+	"unwantedRecommendations": [
+		"shd101wyy.markdown-preview-enhanced"
+	]
+}

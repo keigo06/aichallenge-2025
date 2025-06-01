@@ -1,5 +1,30 @@
 #!/bin/bash
 
+# コマンドライン引数の処理
+mode="${1:-normal}"  # デフォルトは normal モード
+
+# Help function to display usage
+usage() {
+    echo "Usage: $0 [MODE]"
+    echo "Modes:"
+    echo "  normal    通常モード（デフォルト）"
+    echo "  headless  ヘッドレスモード"
+    exit 1
+}
+
+# 引数のチェック
+case "${mode}" in
+"normal"|"headless")
+    ;;
+"help"|"-h"|"--help")
+    usage
+    ;;
+*)
+    echo "Error: Invalid mode '${mode}'"
+    usage
+    ;;
+esac
+
 # Create a temporary file to store process IDs
 PID_FILE=$(mktemp)
 echo "Process ID file: $PID_FILE"
@@ -141,8 +166,13 @@ sudo ip link set multicast on lo
 sudo sysctl -w net.core.rmem_max=2147483647 >/dev/null
 
 # Start AWSIM with nohup
-echo "Start AWSIM"
-nohup /aichallenge/run_simulator.bash >/dev/null &
+if [ "${mode}" = "headless" ]; then
+    echo "Start AWSIM in headless mode"
+    nohup /aichallenge/run_simulator.bash headless >/dev/null &
+else
+    echo "Start AWSIM"
+    nohup /aichallenge/run_simulator.bash >/dev/null &
+fi
 PID_AWSIM=$!
 echo "AWSIM PID: $PID_AWSIM"
 echo "$PID_AWSIM" >"$PID_FILE"
@@ -193,13 +223,18 @@ until (ros2 service type /debug/service/capture_screen >/dev/null); do
     sleep 5
 done
 
-# Move windows
+# Move RViz window to appropriate position
 wmctrl -a "RViz" && wmctrl -r "RViz" -e 0,0,0,1920,1043
 wmctrl -a "AWSIM" && wmctrl -r "AWSIM" -e 0,0,0,900,1043
 
-bash /aichallenge/publish.bash all
+# モードに応じた処理の実行
+if [ "${mode}" = "headless" ]; then
+    bash /aichallenge/publish.bash headless
+else
+    bash /aichallenge/publish.bash all
+fi
 
-# Wait for AWSIM to finish (this is the main process we're waiting for)
+# Wait for AWSIM to finish
 wait "$PID_AWSIM"
 
 # Stop recording rviz2

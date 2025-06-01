@@ -12,3 +12,11 @@ Toward the competition, we will update the following pages to provide informatio
 
 - [日本語ページ](https://automotiveaichallenge.github.io/aichallenge-documentation-2025/)
 - [English Page](https://automotiveaichallenge.github.io/aichallenge-documentation-2025/en/)
+
+## チーム開発用補足
+
+```bash
+./run_evaluation.bash          # 通常モード（AWSIMあり）
+./run_evaluation.bash normal   # 通常モード（AWSIMあり）
+./run_evaluation.bash headless # 画面表示なしモード（Rvizのみ）
+```

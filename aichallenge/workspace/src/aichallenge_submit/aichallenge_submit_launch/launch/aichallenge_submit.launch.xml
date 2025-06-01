@@ -23,4 +23,9 @@
   <node pkg="goal_pose_setter" exec="goal_pose_setter_node" name="goal_pose_setter" output="screen">
     <param from="$(find-pkg-share goal_pose_setter)/config/default_goal_pose.param.yaml" />
   </node>
+
+  <!-- デバッグ用のログ設定 -->
+  <node pkg="path_to_trajectory" exec="path_to_trajectory_node" name="path_to_trajectory" output="screen">
+    <param name="ros__parameters.log_level" value="debug"/>
+  </node>
 </launch>

@@ -7,6 +7,9 @@ case "${mode}" in
 "endless")
     opts=("--endless")
     ;;
+"headless")
+    opts=("-batchmode" "-nographics")
+    ;;
 *)
     opts=("")
     ;;

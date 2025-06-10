@@ -14,23 +14,25 @@
 #ifndef PATH_TO_TRAJECTORY__PATH_TO_TRAJECTORY_HPP_
 #define PATH_TO_TRAJECTORY__PATH_TO_TRAJECTORY_HPP_
 
+#include "rclcpp/rclcpp.hpp"
+
 #include "autoware_auto_planning_msgs/msg/path_with_lane_id.hpp"
 #include "autoware_auto_planning_msgs/msg/trajectory.hpp"
 #include "autoware_auto_planning_msgs/msg/trajectory_point.hpp"
-#include "rclcpp/rclcpp.hpp"
 #include "visualization_msgs/msg/marker_array.hpp"
 
-class PathToTrajectory : public rclcpp::Node {
- public:
+class PathToTrajectory : public rclcpp::Node
+{
+public:
   using PathWithLaneId = autoware_auto_planning_msgs::msg::PathWithLaneId;
   using Trajectory = autoware_auto_planning_msgs::msg::Trajectory;
   using TrajectoryPoint = autoware_auto_planning_msgs::msg::TrajectoryPoint;
   using MarkerArray = visualization_msgs::msg::MarkerArray;
 
- public:
+public:
   PathToTrajectory();
 
- private:
+private:
   void pathCallback(const PathWithLaneId::SharedPtr msg);
 
   rclcpp::Subscription<PathWithLaneId>::SharedPtr path_sub_;

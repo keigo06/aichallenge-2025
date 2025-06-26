@@ -35,6 +35,11 @@ request_control_auto() {
 }
 
 # Function to set initial pose
+# Assignment 1 set correct initial pose
+#            x: 89633.29,
+#            y: 43127.57,
+#            z: 0.8778,
+#            w: 0.4788
 set_initial_pose() {
     echo "Setting initial pose..."
     ros2 topic pub -1 /initialpose geometry_msgs/msg/PoseWithCovarianceStamped "{ 
@@ -44,15 +49,15 @@ set_initial_pose() {
       pose: {
         pose: {
           position: {
-            x: 89633.29,
-            y: 43127.57,
+            x: 89634.00,
+            y: 43129.00,
             z: 0.0
           },
           orientation: {
             x: 0.0,
             y: 0.0,
-            z: 0.8778,
-            w: 0.4788
+            z: 0.8000,
+            w: 0.4000
           }
         }
       }
@@ -77,11 +82,11 @@ initial)
     set_initial_pose
     ;;
 all)
-    capture_screen
-    sleep 1
     set_initial_pose
     sleep 1
     request_control
+    capture_screen
+    sleep 1
     ;;
 headless)
     capture_screen

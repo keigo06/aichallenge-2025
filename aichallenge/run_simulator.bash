@@ -3,9 +3,17 @@ AWSIM_DIRECTORY=/aichallenge/simulator/AWSIM_GPU
 
 mode="${1}"
 
+if command -v nvidia-smi &>/dev/null && [[ -e /dev/nvidia0 ]]; then
+    echo "[INFO] NVIDIA GPU detected"
+    opts=()
+else
+    echo "[INFO] No NVIDIA GPU detected → running on headless mode"
+    opts=("-headless")
+fi
+
 case "${mode}" in
 "endless")
-    opts=("--endless")
+    opts+=(" --endless")
     ;;
 "headless")
     opts=("-batchmode" "-nographics")

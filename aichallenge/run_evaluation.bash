@@ -102,7 +102,7 @@ cleanup() {
     # Stop recording rosbag
     echo "Stop rosbag"
     if [[ -n $PID_ROSBAG ]] && kill -0 "$PID_ROSBAG" 2>/dev/null; then
-        graceful_shutdown "$PID_ROSBAG" 15
+        graceful_shutdown "$PID_ROSBAG" 3
     fi
 
     # shutdown ROS2 nodes
@@ -112,23 +112,25 @@ cleanup() {
         ros2 lifecycle set "$node" shutdown 2>/dev/null || true
         ros2 node kill "$node" 2>/dev/null || true
     done
-    sleep 1
 
     # Stop Autoware
     echo "Stop Autoware"
     if [[ -n $PID_AUTOWARE ]] && kill -0 "$PID_AUTOWARE" 2>/dev/null; then
-        graceful_shutdown "$PID_AUTOWARE" 20
+        graceful_shutdown "$PID_AUTOWARE" 3
     fi
 
     # Stop AWSIM
     echo "Stop AWSIM"
     if [[ -n $PID_AWSIM ]] && kill -0 "$PID_AWSIM" 2>/dev/null; then
-        graceful_shutdown "$PID_AWSIM" 10
+        graceful_shutdown "$PID_AWSIM" 3
     fi
 
     # Compress rosbag
     echo "Compress rosbag"
     if [ -d "rosbag2_autoware" ]; then
+        # Postprocess result
+        echo "Postprocess result"
+        python3 /aichallenge/workspace/src/aichallenge_system/script/motion_analytics.py --input rosbag2_autoware --output .
         tar -czf rosbag2_autoware.tar.gz rosbag2_autoware
         rm -rf rosbag2_autoware
     fi
@@ -139,7 +141,7 @@ cleanup() {
         while read -r pid; do
             if kill -0 "$pid" 2>/dev/null; then
                 echo "Attempting graceful shutdown of remaining PID $pid"
-                graceful_shutdown "$pid" 30
+                graceful_shutdown "$pid" 3
             fi
         done <"$PID_FILE"
         rm "$PID_FILE"
@@ -190,16 +192,6 @@ echo "$PID_AUTOWARE" >>"$PID_FILE"
 get_child_pids "$PID_AUTOWARE"
 sleep 3
 
-# Start recording rosbag with nohup
-echo "Start rosbag"
-nohup ros2 bag record -a -o rosbag2_autoware >/dev/null 2>&1 &
-PID_ROSBAG=$!
-echo "ROS Bag PID: $PID_ROSBAG"
-echo "$PID_ROSBAG" >>"$PID_FILE"
-# recursively get child processes
-get_child_pids "$PID_ROSBAG"
-sleep 5
-
 # run updater
 (
     while true; do
@@ -227,6 +219,17 @@ done
 wmctrl -a "RViz" && wmctrl -r "RViz" -e 0,0,0,1920,1043
 wmctrl -a "AWSIM" && wmctrl -r "AWSIM" -e 0,0,0,900,1043
 
+# Start recording rosbag with nohup
+# TODO: check rosbag
+
+echo "Start rosbag"
+nohup ros2 bag record -a -o rosbag2_autoware >/dev/null 2>&1 &
+PID_ROSBAG=$!
+echo "ROS Bag PID: $PID_ROSBAG"
+echo "$PID_ROSBAG" >>"$PID_FILE"
+# recursively get child processes
+get_child_pids "$PID_ROSBAG"
+
 if [ "${mode}" = "headless" ]; then
     bash /aichallenge/publish.bash headless
 else
@@ -239,7 +242,7 @@ wait "$PID_AWSIM"
 # Stop recording rviz2
 echo "Stop screen capture"
 bash /aichallenge/publish.bash screen
-sleep 10
+sleep 3
 
 # Convert result
 echo "Convert result"

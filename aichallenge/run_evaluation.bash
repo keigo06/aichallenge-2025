@@ -182,6 +182,10 @@ sleep 3
 
 # Start Autoware with nohup
 echo "Start Autoware"
+# Set log level to DEBUG
+export RCUTILS_LOGGING_MIN_SEVERITY=DEBUG
+# export RCUTILS_CONSOLE_OUTPUT_FORMAT="[{severity}]: {message}"
+echo "Log level set to: $RCUTILS_LOGGING_MIN_SEVERITY"
 nohup /aichallenge/run_autoware.bash awsim >autoware.log 2>&1 &
 PID_AUTOWARE=$!
 echo "Autoware PID: $PID_AUTOWARE"

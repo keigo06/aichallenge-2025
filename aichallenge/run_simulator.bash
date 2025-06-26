@@ -1,11 +1,14 @@
 #!/bin/bash
-AWSIM_DIRECTORY=/aichallenge/simulator/AWSIM
+AWSIM_DIRECTORY=/aichallenge/simulator/AWSIM_GPU
 
 mode="${1}"
 
 case "${mode}" in
 "endless")
     opts=("--endless")
+    ;;
+"headless")
+    opts=("-batchmode" "-nographics")
     ;;
 *)
     opts=("")

@@ -1,4 +1,8 @@
 {
+    "C_Cpp.clang_format_path": "/usr/bin/clang-format",
+    "C_Cpp.default.cppStandard": "c++17",
+    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "editor.formatOnSave": true,
     "python.autoComplete.extraPaths": [
         "/autoware/install/static_centerline_optimizer/local/lib/python3.10/dist-packages",
         "/autoware/install/planning_validator/local/lib/python3.10/dist-packages",

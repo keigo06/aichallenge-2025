@@ -14,24 +14,38 @@
 #ifndef PATH_TO_TRAJECTORY__PATH_TO_TRAJECTORY_HPP_
 #define PATH_TO_TRAJECTORY__PATH_TO_TRAJECTORY_HPP_
 
-#include "autoware_auto_planning_msgs/msg/path_with_lane_id.hpp"
-#include "autoware_auto_planning_msgs/msg/trajectory.hpp"
-#include "autoware_auto_planning_msgs/msg/trajectory_point.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-class PathToTrajectory : public rclcpp::Node {
- public:
-  using PathWithLaneId = autoware_auto_planning_msgs::msg::PathWithLaneId;
+#include "autoware_auto_planning_msgs/msg/trajectory.hpp"
+#include "autoware_auto_planning_msgs/msg/trajectory_point.hpp"
+#include "visualization_msgs/msg/marker_array.hpp"
+#include "std_msgs/msg/float64_multi_array.hpp"
+
+class PathToTrajectory : public rclcpp::Node
+{
+public:
   using Trajectory = autoware_auto_planning_msgs::msg::Trajectory;
   using TrajectoryPoint = autoware_auto_planning_msgs::msg::TrajectoryPoint;
+  using MarkerArray = visualization_msgs::msg::MarkerArray;
 
- public:
+public:
   PathToTrajectory();
 
- private:
-  void callback(const PathWithLaneId::SharedPtr msg);
-  rclcpp::Subscription<PathWithLaneId>::SharedPtr sub_;
-  rclcpp::Publisher<Trajectory>::SharedPtr pub_;
+private:
+  void trajectoryCallback(const Trajectory::SharedPtr msg);
+  void avoidObstacles(Trajectory & trajectory);
+  void smoothTrajectory(Trajectory & trajectory);
+  void publishDebugMarkers(const Trajectory & trajectory);
+  void publishDistanceInfo(const Trajectory & trajectory);
+
+  rclcpp::Subscription<Trajectory>::SharedPtr trajectory_sub_;
+  rclcpp::Subscription<MarkerArray>::SharedPtr objects_sub_;
+  rclcpp::Publisher<Trajectory>::SharedPtr trajectory_pub_;
+  rclcpp::Publisher<MarkerArray>::SharedPtr debug_markers_pub_;
+  rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr distance_info_pub_;
+
+  // 障害物の位置情報を保持するメンバ変数
+  MarkerArray::SharedPtr objects_;
 };
 
 #endif  // PATH_TO_TRAJECTORY__PATH_TO_TRAJECTORY_HPP_

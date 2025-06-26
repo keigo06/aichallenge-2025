@@ -8,6 +8,7 @@ usage() {
     echo "  control     Request control mode change"
     echo "  initial     Set initial pose"
     echo "  all         Execute all commands in sequence"
+    echo "  headless    Execute all commands in headless mode"
     echo "  help        Display this help message"
     exit 1
 }
@@ -19,11 +20,18 @@ capture_screen() {
     echo "Screen capture requested"
 }
 
-# Function to request control mode
+# Function to request control mode (manual)
 request_control() {
     echo "Requesting control mode change..."
     ros2 service call /control/control_mode_request autoware_auto_vehicle_msgs/srv/ControlModeCommand '{mode: 1}' >/dev/null
     echo "Control mode change requested"
+}
+
+# Function to request control mode (automatic)
+request_control_auto() {
+    echo "Changing control mode to autonomous..."
+    ros2 topic pub -1 /control/control_mode_request_topic std_msgs/msg/Bool "{data: true}"
+    echo "Control mode changed to autonomous"
 }
 
 # Function to set initial pose
@@ -74,6 +82,13 @@ all)
     set_initial_pose
     sleep 1
     request_control
+    ;;
+headless)
+    capture_screen
+    sleep 1
+    set_initial_pose
+    sleep 1
+    request_control_auto
     ;;
 help)
     usage

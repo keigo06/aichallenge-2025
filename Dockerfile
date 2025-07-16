@@ -1,7 +1,9 @@
 # FROM osrf/ros:humble-desktop AS common
 FROM ghcr.io/automotiveaichallenge/autoware-universe:humble-latest AS common
 
-RUN echo "deb [trusted=yes] https://download.eclipse.org/zenoh/debian-repo/ /" | tee -a /etc/apt/sources.list > /dev/null && apt-get update
+COPY ./vehicle/zenoh-bridge-ros2dds_1.4.0_amd64.deb /tmp/
+RUN apt install /tmp/zenoh-bridge-ros2dds_1.4.0_amd64.deb
+RUN apt-get update
 COPY packages.txt /tmp/packages.txt
 RUN xargs -a /tmp/packages.txt apt-get install -y --no-install-recommends
 
@@ -22,6 +24,7 @@ FROM common AS dev
 
 RUN echo 'export PS1="\[\e]0;(AIC_DEV) ${debian_chroot:+($debian_chroot)}\u@\h: \w\a\](AIC_DEV) ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "' >> /etc/skel/.bashrc
 RUN echo 'cd /aichallenge' >> /etc/skel/.bashrc
+RUN echo 'eval $(resize)' >> /etc/skel/.bashrc
 ENV RCUTILS_COLORIZED_OUTPUT=1
 
 FROM common AS eval

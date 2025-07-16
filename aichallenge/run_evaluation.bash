@@ -127,6 +127,29 @@ cleanup() {
     ros2 daemon stop
     exit 0
 }
+
+move_window() {
+    local has_gpu
+    has_gpu=$(command -v nvidia-smi >/dev/null && echo 1 || echo 0)
+
+    while true; do
+        local has_awsim has_rviz
+        has_awsim=$(wmctrl -l | grep -q "AWSIM" && echo 1 || echo 0)
+        has_rviz=$(wmctrl -l | grep -q "RViz" && echo 1 || echo 0)
+
+        if [ "$has_rviz" -eq 1 ] && { [ "$has_awsim" -eq 1 ] || [ "$has_gpu" -eq 0 ]; }; then
+            break
+        fi
+        sleep 1
+    done
+    echo "AWSIMとRVizのウィンドウが見つかりました"
+    # Move windows
+    wmctrl -a "RViz" && wmctrl -r "RViz" -e 0,0,0,1920,1043
+    sleep 1
+    wmctrl -a "AWSIM" && wmctrl -r "AWSIM" -e 0,0,0,900,1043
+    sleep 2
+}
+
 # Trap Ctrl+C (SIGINT) and normal termination (EXIT)
 trap cleanup SIGINT SIGTERM EXIT
 
@@ -179,22 +202,15 @@ sleep 3
 PID_UPDATER=$!
 echo "$PID_UPDATER" >>"$PID_FILE"
 
-# Start recording rviz2
-echo "Check if screen capture is ready"
-until (ros2 service type /debug/service/capture_screen >/dev/null); do
-    sleep 5
-    echo "Check if screen capture is not ready"
-done
-
-# Move windows
-wmctrl -a "RViz" && wmctrl -r "RViz" -e 0,0,0,1920,1043
-wmctrl -a "AWSIM" && wmctrl -r "AWSIM" -e 0,0,0,900,1043
-
+move_window
+bash /aichallenge/publish.bash check
+move_window
 bash /aichallenge/publish.bash all
+bash /aichallenge/publish.bash screen
 
 # Start recording rosbag with nohup
 echo "Start rosbag"
-nohup ros2 bag record -a -o rosbag2_autoware >/dev/null 2>&1 &
+nohup /aichallenge/record_rosbag.bash >/dev/null 2>&1 &
 PID_ROSBAG=$!
 echo "ROS Bag PID: $PID_ROSBAG"
 echo "$PID_ROSBAG" >>"$PID_FILE"

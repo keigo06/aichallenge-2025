@@ -1,1 +1,4 @@
 log/
+.vscode/browse.vc.db
+.vscode/browse.vs.db-shm
+.vscode/browse.vs.db-wal

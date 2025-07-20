@@ -180,6 +180,7 @@
         "/aichallenge/workspace/src/aichallenge_submit/imu_corrector/include/**",
         "/aichallenge/workspace/src/aichallenge_submit/path_to_trajectory/include/**",
         "/aichallenge/workspace/src/aichallenge_submit/racing_kart_gnss_poser/include/**",
+        "/aichallenge/workspace/src/aichallenge_submit/simple_forward_looking_controller/include/**",
         "/aichallenge/workspace/src/aichallenge_submit/simple_pure_pursuit/include/**",
         "/aichallenge/workspace/src/aichallenge_system/autoware_overlay_rviz_plugin/include/**",
         "/usr/include/**"

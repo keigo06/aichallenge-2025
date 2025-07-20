@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+        "ms-vscode.cpptools",
+        "mhutchie.git-graph",
+        "eamodio.gitlens",
+        "oderwat.indent-rainbow",
+        "yzhang.markdown-all-in-one",
+        "streetsidesoftware.code-spell-checker",
+        "gruntfuggly.todo-tree",
+        "ranch-hand-robotics.urdf-editor",
+        "ranch-hand-robotics.rde-ros-2",
+        "shd101wyy.markdown-preview-enhanced"
+    ]
+}

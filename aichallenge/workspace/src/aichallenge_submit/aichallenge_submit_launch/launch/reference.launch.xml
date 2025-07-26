@@ -118,12 +118,22 @@
 
       <!-- Customizable -->
       <node pkg="simple_trajectory_generator" exec="simple_trajectory_generator_node" name="simple_trajectory_generator" output="screen">
-            <param name="csv_path" value="$(find-pkg-share simple_trajectory_generator)/data/raceline_awsim_30km.csv"/>
+            <param name="csv_path" value="$(find-pkg-share simple_trajectory_generator)/data/raceline_awsim_30km_start_pos_change.csv"/>
             <param name="z" value="6.5"/>
       </node>
       
     </group>
   </group>
+
+  <!-- simple trajectory editor -->
+  <node pkg="editor_tool_server" exec="interactive_server" output="screen" name="editor_tool_server">
+    <param name="csv_file_path" value="/aichallenge/aichallenge-trajectory-editor/csv/35_07092101.csv"/>
+    <param name="publish_on_initialize" value="false"/>
+    <param name="wait_seconds" value="15.0"/>
+    <param name="grad_min_speed" value="0.0"/>
+    <param name="grad_mid_speed" value="15.0"/>
+    <param name="grad_max_speed" value="40.0"/>
+  </node>
 
   <!-- Pure Pursuit -->
   <let name="steering_tire_angle_gain_var" value="1.0" if="$(var simulation)"/>

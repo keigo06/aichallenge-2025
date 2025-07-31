@@ -118,7 +118,7 @@
 
       <!-- Customizable -->
       <node pkg="simple_trajectory_generator" exec="simple_trajectory_generator_node" name="simple_trajectory_generator" output="screen">
-            <param name="csv_path" value="$(find-pkg-share simple_trajectory_generator)/data/raceline_awsim_30km_start_pos_change.csv"/>
+            <param name="csv_path" value="$(find-pkg-share simple_trajectory_generator)/data/raceline_awsim_30km_start_pos_change_v5_interpolated_500.csv"/>
             <param name="z" value="6.5"/>
       </node>
       
@@ -126,31 +126,53 @@
   </group>
 
   <!-- simple trajectory editor -->
-  <node pkg="editor_tool_server" exec="interactive_server" output="screen" name="editor_tool_server">
+  <!-- <node pkg="editor_tool_server" exec="interactive_server" output="screen" name="editor_tool_server">
     <param name="csv_file_path" value="/aichallenge/aichallenge-trajectory-editor/csv/35_07092101.csv"/>
     <param name="publish_on_initialize" value="false"/>
     <param name="wait_seconds" value="15.0"/>
     <param name="grad_min_speed" value="0.0"/>
     <param name="grad_mid_speed" value="15.0"/>
     <param name="grad_max_speed" value="40.0"/>
-  </node>
+  </node> -->
 
-  <!-- Pure Pursuit -->
-  <let name="steering_tire_angle_gain_var" value="1.0" if="$(var simulation)"/>
-  <let name="steering_tire_angle_gain_var" value="1.639" unless="$(var simulation)"/>
+<!-- Pure Pursuit -->
+<let name="steering_tire_angle_gain_var" value="1.0" if="$(var simulation)"/>
+<let name="steering_tire_angle_gain_var" value="1.639" unless="$(var simulation)"/>
 
-  <node pkg="simple_forward_looking_controller" exec="simple_forward_looking_controller" name="simple_pure_pursuit_node" output="screen">
-    <param name="use_external_target_vel" value="true"/>
-    <param name="external_target_vel" value="9.433819406250176"/>
-    <param name="lookahead_gain" value="0.11247600989281052"/>
-    <param name="lookahead_min_distance" value="3.4990975259037045"/>
-    <param name="speed_proportional_gain" value="2.43793172766722"/>
-    <param name="steering_tire_angle_gain" value="$(var steering_tire_angle_gain_var)"/>
+<arg name="lookahead_gain" default="$(env LOOKAHEAD_GAIN 0.5)" description="parameters"/>
+<arg name="lookahead_min_distance" default="$(env LOOKAHEAD_MIN_DISTANCE 1.5)" description="parameters"/>
 
-    <remap from="input/kinematics" to="/localization/kinematic_state"/>
-    <remap from="input/trajectory" to="/planning/scenario_planning/trajectory"/>
-    <remap from="output/control_cmd" to="/control/command/control_cmd"/>
-  </node>
+<arg name="p_gain" default="$(env P_GAIN 1.0)" description="parameters"/>
+<arg name="i_gain" default="$(env I_GAIN 0.002)" description="parameters"/>
+<arg name="d_gain" default="$(env D_GAIN 0.025)" description="parameters"/>
+<arg name="switch_y_dev" default="$(env SWITCH_Y_DEV 2.5)" description="parameters"/>
+<arg name="Lv_min" default="$(env LV_MIN 2.8)" description="parameters"/>
+<arg name="Lv_max" default="$(env LV_MAX 9.0)" description="parameters"/>
+<arg name="Lv_v_gain" default="$(env LV_V_GAIN 3.0)" description="parameters"/>
+
+<!-- <node pkg="simple_pure_pursuit" exec="simple_pure_pursuit" name="simple_pure_pursuit_node" output="screen"> -->
+<node pkg="simple_forward_looking_controller" exec="simple_forward_looking_controller" name="simple_pure_pursuit_node" output="screen">
+  <!-- Parameters that need not be changed -->
+  <param name="use_external_target_vel" value="true"/>
+  <param name="external_target_vel" value="9.722"/>
+  <param name="speed_proportional_gain" value="2.0"/>
+  <!-- Conventional parameterst -->
+  <param name="lookahead_gain" value="$(var lookahead_gain)"/>
+  <param name="lookahead_min_distance" value="$(var lookahead_min_distance)"/>
+  <param name="steering_tire_angle_gain" value="$(var steering_tire_angle_gain_var)"/>
+  <!-- New parameterst -->
+  <param name="p_gain" value="$(var p_gain)"/>
+  <param name="i_gain" value="$(var i_gain)"/>
+  <param name="d_gain" value="$(var d_gain)"/>
+  <param name="switch_y_dev" value="$(var switch_y_dev)"/>
+  <param name="Lv_min" value="$(var Lv_min)"/>
+  <param name="Lv_max" value="$(var Lv_max)"/>
+  <param name="Lv_v_gain" value="$(var Lv_v_gain)"/>
+
+  <remap from="input/kinematics" to="/localization/kinematic_state"/>
+  <remap from="input/trajectory" to="/planning/scenario_planning/trajectory"/>
+  <remap from="output/control_cmd" to="/control/command/control_cmd"/>
+</node>
 
   <!-- Map -->
   <group>
